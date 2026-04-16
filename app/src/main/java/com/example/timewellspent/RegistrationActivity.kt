@@ -1,13 +1,14 @@
 package com.example.timewellspent
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.backendless.Backendless
+import com.backendless.BackendlessUser
 import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
+import com.example.timewellspent.LoginActivity.Companion.TAG
 import com.example.timewellspent.databinding.ActivityRegistrationBinding
 
 
@@ -31,6 +32,8 @@ class RegistrationActivity : AppCompatActivity() {
 
         // register an account and send back the username & password
         // to the login activity to prefill those fields
+        //Backendless.UserService.register(user, AsyncCallback<BackendlessUser>)
+
         binding.buttonRegistrationRegister.setOnClickListener {
             val password = binding.editTextTextPassword.text.toString()
             val confirm = binding.editTextRegistrationConfirmPassword.text.toString()
@@ -39,18 +42,38 @@ class RegistrationActivity : AppCompatActivity() {
             val email = binding.editTextRegistrationEmail.text.toString()
 
 
+            if( RegistrationUtil.validatePassword(password, confirm) &&
+                RegistrationUtil.validateUsername(username) &&
+                RegistrationUtil.validateName(name) &&
+                RegistrationUtil.validateEmail(email)){
 
-//            if(RegistrationUtil.validatePassword(password, confirm) &&
-//                RegistrationUtil.validateUsername(username))  {  // && do the rest of the validations
-//                // apply lambda will call the functions inside it on the object
-//                // that apply is called on
-//
-//                // register the user on backendless following the documentation
-//                // and in the handleResponse, that's where we make the resultIntent and go back
+                    // apply lambda will call the functions inside it on the object
+                    // that apply is called on
+
+                    // register the user on backendless following the documentation
+                    // and in the handleResponse, that's where we make the resultIntent and go back
 //                // in the handleFailure, toast the failure and don't go back.
 //
+                val user = BackendlessUser()
+                user.setProperty("email", email)
+                user.setProperty("name", name)
+                user.setProperty("username", username)
+                user.setPassword(password)
+                Backendless.UserService.register(user, object : AsyncCallback<BackendlessUser?> {
+                    override fun handleResponse(registeredUser: BackendlessUser?) {
+                        val intent = Intent()
+                        intent.putExtra(LoginActivity.EXTRA_USERNAME, binding.editTextRegistrationUsername.text.toString())
+                        intent.putExtra(LoginActivity.EXTRA_PASSWORD, binding.editTextTextPassword.text.toString())
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }
 
-//            }
+                    override fun handleFault(fault: BackendlessFault) {
+                        Log.d(TAG, "fault \"${fault?.message}\" encountered")
+                    }
+                })
+            }
+
         }
 
     }
