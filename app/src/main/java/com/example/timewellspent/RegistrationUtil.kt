@@ -31,7 +31,7 @@ object RegistrationUtil {
     // both passwords match
     // not empty
     fun validatePassword(password : String, confirmPassword: String) : Boolean {
-        if(password.length < 8 || confirmPassword.length < 8){
+        if(password.length < 5 || confirmPassword.length < 5){
             return false
         }
         else if(password != confirmPassword){
@@ -47,15 +47,15 @@ object RegistrationUtil {
         if(!hasDigit){
             return false
         }
-        var hasUpperCase = false
-        for(i in 0 until password.length){
-            if(password[i].isUpperCase()){
-                hasUpperCase = true
-            }
-        }
-        if(!hasUpperCase){
-            return false
-        }
+       // var hasUpperCase = false
+        //for(i in 0 until password.length){
+          //  if(password[i].isUpperCase()){
+            //    hasUpperCase = true
+           // }
+        //}
+       // if(!hasUpperCase){
+        //    return false
+        //}
         return true
     }
 
