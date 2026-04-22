@@ -43,7 +43,7 @@ class SessionAdapter(var sessionList: List<Session>) : RecyclerView.Adapter<Sess
         val session = sessionList[position]
         holder.textViewName.text = session.name
         // TODO: format the date nicely to show just the day month and year
-        holder.textViewDate.text = session.date.toString()
+        holder.textViewDate.text = session.sessionDate.toString()
         // TODO: format the time to show it in hours and minutes
         holder.textViewTimeSpent.text = session.elapsedTime.toString()
         // TODO: format the money nicely to show it like 79 BPM

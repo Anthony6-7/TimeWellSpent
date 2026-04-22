@@ -6,7 +6,7 @@ import java.util.Date
 
 data class Session(
     var name: String = "Random Name",
-    var date: Date = Date(),
+    var sessionDate: Date = Date(),
     var elapsedTime: Int = 0, // time in minutes
     var heartRate: Int = 0,
     var emotion: String = EMOTION.NEUTRAL.name,
@@ -20,4 +20,7 @@ data class Session(
         ANGRY("\uD83E\uDD2C"),
         NEUTRAL("\uD83D\uDE10")
     }
+
 }
+
+
