@@ -1,11 +1,16 @@
 package com.example.timewellspent
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.backendless.Backendless
+import com.backendless.async.callback.AsyncCallback
+import com.backendless.exceptions.BackendlessFault
 
 class SessionAdapter(var sessionList: List<Session>) : RecyclerView.Adapter<SessionAdapter.ViewHolder>() {
 
@@ -24,6 +29,7 @@ class SessionAdapter(var sessionList: List<Session>) : RecyclerView.Adapter<Sess
             textViewTimeSpent = itemView.findViewById(R.id.textView_sessionEntry_timeSpent)
             textViewEmotion = itemView.findViewById(R.id.textView_sessionEntry_emotion)
             layout = itemView.findViewById(R.id.layout_sessionEntry)
+
         }
 
     }
@@ -40,6 +46,8 @@ class SessionAdapter(var sessionList: List<Session>) : RecyclerView.Adapter<Sess
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val game = sessionList[position]
+        val context = holder.layout.context
         val session = sessionList[position]
         holder.textViewName.text = session.name
         // TODO: format the date nicely to show just the day month and year
@@ -54,5 +62,56 @@ class SessionAdapter(var sessionList: List<Session>) : RecyclerView.Adapter<Sess
         } catch (ex: IllegalArgumentException) {
             "¯\\_(ツ)_/¯"
         }
+        holder.layout.isLongClickable = true
+        holder.layout.setOnLongClickListener {
+            // the textview you want the PopMenu to be anchored to should be added below replacing holder.textViewName
+            val popMenu = PopupMenu(context, holder.textViewName)
+            popMenu.inflate(R.menu.menu_session_list_context)
+            popMenu.setOnMenuItemClickListener {
+                when(it.itemId) {
+                    R.id.menu_session_delete -> {
+                        deleteFromBackendless(position)
+                        true
+                    }
+                    else -> true
+                }
+            }
+            popMenu.show()
+            true
+        }
+
+    }
+    private fun deleteFromBackendless(position: Int) {
+        Log.d("SessionAdapter", "deleteFromBackendless: Trying to delete ${sessionList[position]}")
+        // put in the code to delete the item using the callback from Backendless
+        // in the handleResponse, we'll need to also delete the item from the sessionList
+        //(will need to update the variable to make it mutable)
+        // and make sure that the recyclerview is updated using notifyDatasetChanged
+        // you can instead use notifyItemRemoved because we know what position was removed. it's more efficient to do that
+        Backendless.Data.of<Session?>(Session::class.java)
+            .save(sessionList[position], object : AsyncCallback<Session?> {
+                override fun handleResponse(savedContact: Session?) {
+                    Backendless.Data.of<Session?>(Session::class.java).remove(
+                        savedContact,
+                        object : AsyncCallback<Long?> {
+                            override fun handleResponse(response: Long?) {
+                                Log.d("SessionAdapter", "session ${sessionList[position]} deleted")
+                                // Contact has been deleted. The response is the
+                                // time in milliseconds when the object was deleted
+                            }
+
+                            override fun handleFault(fault: BackendlessFault?) {
+                                Log.d("SessionAdapter", "fault ${fault?.message}")
+                                // an error has occurred, the error code can be
+                                // retrieved with fault.getCode()
+                            }
+                        })
+                }
+
+                override fun handleFault(fault: BackendlessFault?) {
+                    Log.d("SessionAdapter", "fault ${fault?.message}")
+                    // an error has occurred, the error code can be retrieved with fault.getCode()
+                }
+            })
     }
 }
