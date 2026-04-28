@@ -1,11 +1,14 @@
 package com.example.timewellspent
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View.OnClickListener
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.backendless.Backendless
 import com.backendless.BackendlessUser
 import com.backendless.async.callback.AsyncCallback
@@ -29,6 +32,13 @@ class SessionListActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+        binding.fabSessionListNewSession.setOnClickListener{
+            startActivity(Intent(this, SessionDetailActivity:: class.java))
+        }
+        binding.layoutGameList.setOnClickListener{
+            startActivity(Intent(this, SessionDetailActivity:: class.java))
+
         }
 
         // make backendless call to retrieve all data
@@ -64,7 +74,41 @@ class SessionListActivity : AppCompatActivity() {
 
 
 
-        }
+
+
+
+    }
+    /*override fun onStart() {
+        super.onStart()
+        Backendless.UserService.CurrentUser(true, object : AsyncCallback<BackendlessUser?> {
+            override fun handleResponse(response: BackendlessUser?) {
+                var userID = response?.userId
+                val whereClause = "ownerId = '${userID}'"
+                val queryBuilder = DataQueryBuilder.create()
+                queryBuilder.setWhereClause(whereClause)
+                Backendless.Data.of<Session>(Session::class.java).find(
+                    queryBuilder,
+                    object : AsyncCallback<MutableList<Session>> {
+                        override fun handleResponse(response: MutableList<Session>) {
+                            adapter = SessionAdapter(response)
+                            binding.recyclerViewActivitySession.adapter = adapter
+                            binding.recyclerViewActivitySession.layoutManager = LinearLayoutManager(this@SessionListActivity)
+                        }
+
+
+                        override fun handleFault(fault: BackendlessFault) {
+                            // an error has occurred, the error code can be retrieved with fault.getCode()
+                        }
+                    })
+
+            }
+
+            override fun handleFault(fault: BackendlessFault) {
+                // error handling logic
+            }
+        })
+    }
+*/
 
 
 }
