@@ -42,12 +42,13 @@ class SessionListActivity : AppCompatActivity() {
                 queryBuilder.setWhereClause(whereClause)
                 Backendless.Data.of<Session>(Session::class.java).find(
                     queryBuilder,
-                    object : AsyncCallback<List<Session>> {
-                        override fun handleResponse(foundSessions: List<Session>) {
-                            adapter = SessionAdapter(foundSessions)
+                    object : AsyncCallback<MutableList<Session>> {
+                        override fun handleResponse(response: MutableList<Session>) {
+                            adapter = SessionAdapter(response)
                             binding.recyclerViewActivitySession.adapter = adapter
                             binding.recyclerViewActivitySession.layoutManager = LinearLayoutManager(this@SessionListActivity)
                         }
+
 
                         override fun handleFault(fault: BackendlessFault) {
                             // an error has occurred, the error code can be retrieved with fault.getCode()

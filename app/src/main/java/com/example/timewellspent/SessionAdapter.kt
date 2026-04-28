@@ -12,7 +12,7 @@ import com.backendless.Backendless
 import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 
-class SessionAdapter(var sessionList: List<Session>) : RecyclerView.Adapter<SessionAdapter.ViewHolder>() {
+class SessionAdapter(var sessionList: MutableList<Session>) : RecyclerView.Adapter<SessionAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewName: TextView
@@ -96,6 +96,9 @@ class SessionAdapter(var sessionList: List<Session>) : RecyclerView.Adapter<Sess
                         object : AsyncCallback<Long?> {
                             override fun handleResponse(response: Long?) {
                                 Log.d("SessionAdapter", "session ${sessionList[position]} deleted")
+                                sessionList.remove(sessionList[position])
+                                notifyItemRemoved(position)
+//                                notifyItemRangeChanged(position, sessionList.size)
                                 // Contact has been deleted. The response is the
                                 // time in milliseconds when the object was deleted
                             }
