@@ -33,18 +33,17 @@ class SessionListActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         binding.fabSessionListNewSession.setOnClickListener{
-            startActivity(Intent(this, SessionDetailActivity:: class.java))
-        }
-        binding.layoutGameList.setOnClickListener{
             startActivity(Intent(this, SessionDetailActivity:: class.java))
 
         }
+
 
         // make backendless call to retrieve all data
         // in the handleResponse, get the list of data and constructor the adapter & apply to the reyclerview
 
-        Backendless.UserService.CurrentUser(true, object : AsyncCallback<BackendlessUser?> {
+        /*Backendless.UserService.CurrentUser(true, object : AsyncCallback<BackendlessUser?> {
             override fun handleResponse(response: BackendlessUser?) {
                 var userID = response?.userId
                 val whereClause = "ownerId = '${userID}'"
@@ -72,13 +71,15 @@ class SessionListActivity : AppCompatActivity() {
             }
         })
 
+         */
+
 
 
 
 
 
     }
-    /*override fun onStart() {
+    override fun onStart() {
         super.onStart()
         Backendless.UserService.CurrentUser(true, object : AsyncCallback<BackendlessUser?> {
             override fun handleResponse(response: BackendlessUser?) {
@@ -108,7 +109,7 @@ class SessionListActivity : AppCompatActivity() {
             }
         })
     }
-*/
+
 
 
 }

@@ -1,9 +1,11 @@
 package com.example.timewellspent
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +22,7 @@ class SessionAdapter(var sessionList: MutableList<Session>) : RecyclerView.Adapt
         val textViewHeartrate: TextView
         val textViewTimeSpent: TextView
         val textViewEmotion: TextView
+        val updateEntry: Button
         val layout: ConstraintLayout
 
         init {
@@ -28,6 +31,7 @@ class SessionAdapter(var sessionList: MutableList<Session>) : RecyclerView.Adapt
             textViewHeartrate = itemView.findViewById(R.id.textView_sessionEntry_bpm)
             textViewTimeSpent = itemView.findViewById(R.id.textView_sessionEntry_timeSpent)
             textViewEmotion = itemView.findViewById(R.id.textView_sessionEntry_emotion)
+            updateEntry = itemView.findViewById(R.id.button_sessionDetail_save)
             layout = itemView.findViewById(R.id.layout_sessionEntry)
 
         }
@@ -62,6 +66,7 @@ class SessionAdapter(var sessionList: MutableList<Session>) : RecyclerView.Adapt
         } catch (ex: IllegalArgumentException) {
             "¯\\_(ツ)_/¯"
         }
+
         holder.layout.isLongClickable = true
         holder.layout.setOnLongClickListener {
             // the textview you want the PopMenu to be anchored to should be added below replacing holder.textViewName
@@ -78,6 +83,11 @@ class SessionAdapter(var sessionList: MutableList<Session>) : RecyclerView.Adapt
             }
             popMenu.show()
             true
+        }
+        holder.layout.setOnClickListener{
+            val intent = Intent(context, SessionDetailActivity::class.java)
+            intent.putExtra(SessionDetailActivity.EXTRA_SESSION_ENTRY, session)
+            context.startActivity(intent)
         }
 
     }

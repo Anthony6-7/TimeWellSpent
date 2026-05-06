@@ -1,5 +1,6 @@
 package com.example.timewellspent
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -96,6 +97,12 @@ class SessionDetailActivity : AppCompatActivity() {
                             Session.EMOTION.entries.find { it.emoji == binding.spinnerSessionDetailEmotion.selectedItem.toString() }!!.name
 
                         saveToBackendless(sessionEntry)
+                        val sessionIntent =
+                            Intent(this@SessionDetailActivity, SessionListActivity::class.java)
+                        //sessionIntent.putExtra(EXTRA_PASSWORD, password)
+                        //sessionIntent.putExtra(EXTRA_USERNAME, username)
+                        startActivity(sessionIntent)
+
                     }
 
                 }
@@ -113,8 +120,18 @@ class SessionDetailActivity : AppCompatActivity() {
     }
 
     private fun saveToBackendless(gameEntry: Session) {
-        // code here to save to backendless
+        Backendless.Data.of<Session>(Session::class.java)
+            .save(gameEntry, object : AsyncCallback<Session?> {
+                override fun handleResponse(response: Session?) {
+
+
+                }
+
+                override fun handleFault(fault: BackendlessFault) {
+                    // an error has occurred, the error code can be retrieved with fault.getCode()
+                }
+            })
+        }
     }
 
 
-}
